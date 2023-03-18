@@ -125,3 +125,4 @@ STATICFILES_DIRS = [
   BASE_DIR / "static"
 ]
 STATIC_ROOT = BASE_DIR / "staticfiles"
+CRISPY_TEMPLATE_PACK = 'bootstrap4'

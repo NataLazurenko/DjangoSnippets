@@ -1,6 +1,18 @@
 from django.http import Http404
 from django.shortcuts import render, redirect
 from MainApp.forms import SnippetForm
+from MainApp.models import Post
+from MainApp.forms import UserRegisterForm
+from django.contrib import messages
+def register(request):
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_date_get('username')
+            messages.success(request, f'Создан аккаунт {username}!')
+            return redirect('home')
+
 
 
 def add_snippet_page(request):
@@ -17,7 +29,9 @@ def add_snippet_page(request):
 
 
 def index_page(request):
-    context = {'pagename': 'PythonBin'}
+    context = {'pagename': 'PythonBin',
+             'posts': Post.objects.all(),
+               }
     return render(request, 'pages/index.html', context)
 
 
