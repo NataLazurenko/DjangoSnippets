@@ -12,9 +12,13 @@ def register(request):
             username = form.cleaned_date_get('username')
             messages.success(request, f'Создан аккаунт {username}!')
             return redirect('home')
-
-
-
+    if request.method == "GET":
+        form = UserRegisterForm()
+        context = {
+            'form':form,
+            'pagename':'Регистрация',
+        }
+        return render(request,'users/register.html',context)
 def add_snippet_page(request):
     if request.method == "GET":
         form = SnippetForm()
