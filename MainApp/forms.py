@@ -13,7 +13,15 @@ class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
     class Meta:
         model = User
-        fields = ['username','email','password1','password2']
+        fields = ['username','email','password1', 'password2']
+        #password1 = forms.CharField(label="password", widget=forms.PasswordInput)
+        #password2 = forms.CharField(label="password confirm", widget=forms.PasswordInput)
+    def save(self, commit=True):
+        user = super(UserRegisterForm, self).save(commit=False)
+        user.email = self.cleaned_data['email']
+        if commit:
+            user.save()
+        return user
 
 
 

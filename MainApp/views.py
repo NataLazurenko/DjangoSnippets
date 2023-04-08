@@ -4,12 +4,13 @@ from MainApp.forms import SnippetForm
 from MainApp.models import Post
 from MainApp.forms import UserRegisterForm
 from django.contrib import messages
+
 def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             form.save()
-            username = form.cleaned_date_get('username')
+            username = form.cleaned_data['username']
             messages.success(request, f'Создан аккаунт {username}!')
             return redirect('home')
     if request.method == "GET":
