@@ -1,5 +1,6 @@
 {% extends "inc/base.html" %}
 {% load crispy_forms_tags %}
+{% block header %} Вход {% endblock header %}
 {% block content %}
     <div class="content-section">
         <form method="POST">
@@ -17,11 +18,9 @@
             </div>
         </form>
         <div class="border-top pt-3">
-            <small class="text-muted">
                 Нет аккаунта? <a class="ml-2" href="{% url 'register' %}">
                     Зарегистрироваться
                 </a>
-            </small>
         </div>
     </div>
 {% endblock content %}
