@@ -9,6 +9,7 @@ class SnippetForm(ModelForm):
        model = Snippet
        # Описываем поля, которые будем заполнять в форме
        fields = ['name', 'lang', 'code']
+
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
     class Meta:

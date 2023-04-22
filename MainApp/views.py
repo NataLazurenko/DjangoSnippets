@@ -1,13 +1,31 @@
 from django.http import Http404
 from django.shortcuts import render, redirect
-from MainApp.forms import SnippetForm
-from MainApp.models import Post
-from MainApp.forms import UserRegisterForm
+from .forms import SnippetForm
+from .models import Post
+from .forms import UserRegisterForm
 from django.contrib import messages
-
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import authenticate,login
 
 def Login(request):
-    return render(request, 'users/login.html')
+    if request.method == "POST":
+        form = AuthenticationForm(request, data=request.POST)
+
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request,user)
+                messages.success(request, "Вы успешно зашли.")
+            else:
+                messages.warning(request,"Пользователь не найден!")
+        else:
+            messages.warning(request,"Пользователь не найден!")
+    else:
+        form = AuthenticationForm()
+    return render(request, 'users/login.html', context={"form": form})
 
 def register(request):
     if request.method == 'POST':
@@ -24,6 +42,9 @@ def register(request):
             'pagename':'Регистрация',
         }
         return render(request,'users/register.html',context)
+    @login_required
+    def profile(request):
+        return render(request,'users/profile.html')
 def add_snippet_page(request):
     if request.method == "GET":
         form = SnippetForm()
