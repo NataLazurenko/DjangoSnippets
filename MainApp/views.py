@@ -1,12 +1,39 @@
 from django.http import Http404
 from django.shortcuts import render, redirect
-from .forms import SnippetForm
-from .models import Post
-from .forms import UserRegisterForm
+from .models import Post, Profile
+from .forms import UserRegisterForm, SnippetForm, UserProfile
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import authenticate,login
+from django.contrib.auth import authenticate,login, logout
+from Snippets import settings
+
+@login_required
+def profile(request):
+    if request.method == "GET":
+        print(profile.image)
+        form = UserProfile()
+        context = {
+            'form': form,
+            'pagename': 'Профиль',
+            "profile": profile
+        }
+    else:
+        form = UserProfile(request.POST, request.FILES)
+        if form.is_valid():
+            temp_form = form.save(commit=False)
+            temp_form.user = request.user
+            temp_form.image = form.cleaned_data.get('image')
+            temp_form.save()
+            messages.success(request, "Вы успешно изменили свой профиль")
+        else:
+            messages.warning(request,"Ошибка!")
+        context = {
+            'form': form,
+            'pagename': 'Профиль',
+        }
+    return render(request, 'users/profile.html', context)
+
 
 def Login(request):
     if request.method == "POST":
@@ -19,6 +46,7 @@ def Login(request):
             if user is not None:
                 login(request,user)
                 messages.success(request, "Вы успешно зашли.")
+                return redirect(settings.LOGIN_REDIRECT_URL)
             else:
                 messages.warning(request,"Пользователь не найден!")
         else:
@@ -42,9 +70,10 @@ def register(request):
             'pagename':'Регистрация',
         }
         return render(request,'users/register.html',context)
-    @login_required
-    def profile(request):
-        return render(request,'users/profile.html')
+@login_required
+def logout_request(request):
+    logout(request)
+    return render(request, 'users/logout.html')
 def add_snippet_page(request):
     if request.method == "GET":
         form = SnippetForm()

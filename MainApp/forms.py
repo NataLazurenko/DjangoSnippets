@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 from django import forms
-from MainApp.models import Snippet
+from .models import *
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import User
 
@@ -10,6 +10,16 @@ class SnippetForm(ModelForm):
        # Описываем поля, которые будем заполнять в форме
        fields = ['name', 'lang', 'code']
 
+class UserProfile(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['image']
+
+    def save(self, commit=True):
+        user = super(UserProfile, self).save(commit=False)
+        if commit:
+            user.save()
+        return user
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
     class Meta:
@@ -23,6 +33,7 @@ class UserRegisterForm(UserCreationForm):
         if commit:
             user.save()
         return user
+
 
 
 
